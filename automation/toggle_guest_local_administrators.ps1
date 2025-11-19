@@ -6,14 +6,14 @@
 
 .NOTES
     Author        : Jordan Calvert
-    Date Created  : 2024-09-09
+    Date Created  : 2025-09-09
     Last Modified : 2024-09-09
     Version       : 1.0
 
 .TESTED ON
-    Date(s) Tested  : 2024-09-09
+    Date(s) Tested  : 2025-09-09
     Tested By       : Jordan Calvert
-    Systems Tested  : Windows Server 2019 Datacenter, Build 1809
+    Systems Tested  : Windows Server 2025 Datacenter (2025-datacenter-g2)
     PowerShell Ver. : 5.1.17763.6189
 
 .USAGE
@@ -54,4 +54,5 @@ if ($AddGuestToAdminGroup -eq $True) {
     Add-GuestToAdminGroup
 } else {
     Remove-GuestFromAdminGroup
+
 }
