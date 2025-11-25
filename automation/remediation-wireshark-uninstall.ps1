@@ -1,49 +1,59 @@
 <#
 .SYNOPSIS
-    Uninstalls Wireshark from the system executing the script.
-    Tested on Wireshark Version 2.2.1 (v2.2.1-0-ga6fbd27 from master-2.2).
-    Please test thoroughly in a non-production environment before deploying widely.
-    Make sure to run as Administrator or with appropriate privileges.
+    Remediates the Wireshark vulnerability by uninstalling Wireshark silently.
+
+.DESCRIPTION
+    Safely detects and removes Wireshark using its uninstall executable.
+    This script is the remediation counterpart to any lab exercise that
+    intentionally installs outdated or vulnerable packet capture utilities.
 
 .NOTES
-    Author        : Josh Madakor
-    Date Created  : 2024-09-09
-    Last Modified : 2024-09-09
-    Version       : 1.0
-
-.TESTED ON
-    Date(s) Tested  : 2024-09-09
-    Tested By       : Josh Madakor
-    Systems Tested  : Windows Server 2019 Datacenter, Build 1809
-    PowerShell Ver. : 5.1.17763.6189
-    Wireshark Ver.  : 2.2.1 (v2.2.1-0-ga6fbd27 from master-2.2)
-
-.USAGE
-    Example syntax:
-    PS C:\> .\remediation-wireshark-uninstall.ps1 
+    Author        : Jordan Calvert
+    Last Modified : 2025-11-25
+    Tested On     : Windows Server 2019 / Windows 10 / Windows 11
 #>
- 
- # Define the variables
-$wiresharkDisplayName = "Wireshark 2.2.1 (64-bit)"
-$uninstallerPath = "$env:ProgramFiles\Wireshark\uninstall.exe"
-$silentUninstallSwitch = "/S"
 
-# Function to check if Wireshark is installed
-function Is-WiresharkInstalled {
-    return Test-Path -Path $uninstallerPath
+Write-Host "`n=== Wireshark Uninstallation (Remediation) Starting ===" -ForegroundColor Cyan
+
+# -------------------------------------------------------------
+# 1. Variables
+# -------------------------------------------------------------
+$WiresharkDisplayName = "Wireshark 2.2.1 (64-bit)"
+$UninstallerPath       = "$env:ProgramFiles\Wireshark\uninstall.exe"
+$SilentArgs            = "/S"
+
+# -------------------------------------------------------------
+# 2. Detection Function
+# -------------------------------------------------------------
+function Test-WiresharkInstalled {
+    return (Test-Path -Path $UninstallerPath)
 }
 
-# Function to uninstall Wireshark
-function Uninstall-Wireshark {
-    if (Is-WiresharkInstalled) {
-        Write-Output "Uninstalling Wireshark..."
-        & $uninstallerPath $silentUninstallSwitch
-        Write-Output "$($wiresharkDisplayName) has been uninstalled."
-    } else {
-        Write-Output "$($wiresharkDisplayName) is not installed."
+# -------------------------------------------------------------
+# 3. Uninstallation Logic
+# -------------------------------------------------------------
+function Remove-Wireshark {
+    if (Test-WiresharkInstalled) {
+        Write-Host "[*] Wireshark installation detected." -ForegroundColor Yellow
+        Write-Host "[*] Uninstalling Wireshark silently..." -ForegroundColor Yellow
+
+        try {
+            Start-Process -FilePath $UninstallerPath -ArgumentList $SilentArgs -Wait -NoNewWindow
+            Write-Host "[+] Wireshark uninstalled successfully." -ForegroundColor Green
+        }
+        catch {
+            Write-Host "[-] Failed to uninstall Wireshark: $($_.Exception.Message)" -ForegroundColor Red
+        }
+    }
+    else {
+        Write-Host "[-] Wireshark does not appear to be installed at:" -ForegroundColor Gray
+        Write-Host "    $UninstallerPath" -ForegroundColor Gray
     }
 }
 
-# Execute the uninstall function
-Uninstall-Wireshark
- 
+# -------------------------------------------------------------
+# 4. Execute
+# -------------------------------------------------------------
+Remove-Wireshark
+
+Write-Host "`n=== Wireshark Remediation Complete ===`n" -ForegroundColor Cyan
