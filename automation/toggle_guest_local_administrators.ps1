@@ -1,58 +1,100 @@
 <#
 .SYNOPSIS
-    Toggles guest account Administrators group membership (add vs remove) on the system.
-    Please test thoroughly in a non-production environment before deploying widely.
-    Make sure to run as Administrator or with appropriate privileges.
+    Adds or removes the Guest account from the local Administrators group.
+
+.DESCRIPTION
+    This script toggles whether the built-in Guest account is a member
+    of the local Administrators group. It can be used for both:
+      • vulnerability creation (add Guest → insecure)
+      • remediation (remove Guest → secure)
+
+    A reboot is NOT required for this change to take effect.
 
 .NOTES
     Author        : Jordan Calvert
-    Date Created  : 2025-09-09
-    Last Modified : 2024-09-09
-    Version       : 1.0
+    Last Modified : 2025-11-25
+    Version       : 1.1
 
 .TESTED ON
-    Date(s) Tested  : 2025-09-09
-    Tested By       : Jordan Calvert
-    Systems Tested  : Windows Server 2025 Datacenter (2025-datacenter-g2)
-    PowerShell Ver. : 5.1.17763.6189
+    Windows Server 2025 Datacenter
+    Windows Server 2019/2022
+    Windows 10 / Windows 11
+#>
 
-.USAGE
-    Set [$AddGuestToAdminGroup = $False] to secure the system
-    Example syntax:
-    PS C:\> .\toggle-guest-local-administrators.ps1 
- #>
- 
- # Define the variable to control the action: $True to add the guest account, $False to remove it
-$AddGuestToAdminGroup = $False
+Write-Host "`n=== Guest Local Administrators Group Toggle Starting ===" -ForegroundColor Cyan
 
-# Define the local group and user account
+# -------------------------------------------------------------
+# 1. Mode selection
+# -------------------------------------------------------------
+# True  = ADD Guest → insecure (vulnerability creation)
+# False = REMOVE Guest → secure (remediation)
+$AddGuestToAdminGroup = $False   # <-- Change as needed
+
+# -------------------------------------------------------------
+# 2. Variables
+# -------------------------------------------------------------
 $LocalAdminGroup = "Administrators"
-$GuestAccount = "Guest"
+$GuestAccount     = "Guest"
 
-# Function to add the guest account to the Administrators group
+# -------------------------------------------------------------
+# 3. Check group membership safely
+# -------------------------------------------------------------
+function Test-GuestInAdminGroup {
+    try {
+        $result = Get-LocalGroupMember -Group $LocalAdminGroup -Member $GuestAccount -ErrorAction Stop
+        return $true
+    }
+    catch {
+        return $false
+    }
+}
+
+# -------------------------------------------------------------
+# 4. ADD Guest to Administrators (vulnerability creation)
+# -------------------------------------------------------------
 function Add-GuestToAdminGroup {
-    if (-not (Get-LocalGroupMember -Group $LocalAdminGroup -Member $GuestAccount -ErrorAction SilentlyContinue)) {
-        Add-LocalGroupMember -Group $LocalAdminGroup -Member $GuestAccount
-        Write-Output "Guest account has been added to the Administrators group."
-    } else {
-        Write-Output "Guest account is already a member of the Administrators group."
+    if (-not (Test-GuestInAdminGroup)) {
+        Write-Host "[*] Adding Guest to Administrators group..." -ForegroundColor Yellow
+        try {
+            Add-LocalGroupMember -Group $LocalAdminGroup -Member $GuestAccount -ErrorAction Stop
+            Write-Host "✓ Guest added to Administrators group (INSECURE)." -ForegroundColor Red
+        }
+        catch {
+            Write-Host "✗ Failed to add Guest to Administrators group: $($_.Exception.Message)" -ForegroundColor Red
+        }
+    }
+    else {
+        Write-Host "ℹ Guest is already in Administrators group." -ForegroundColor Gray
     }
 }
 
-# Function to remove the guest account from the Administrators group
+# -------------------------------------------------------------
+# 5. REMOVE Guest from Administrators (remediation)
+# -------------------------------------------------------------
 function Remove-GuestFromAdminGroup {
-    if (Get-LocalGroupMember -Group $LocalAdminGroup -Member $GuestAccount -ErrorAction SilentlyContinue) {
-        Remove-LocalGroupMember -Group $LocalAdminGroup -Member $GuestAccount
-        Write-Output "Guest account has been removed from the Administrators group."
-    } else {
-        Write-Output "Guest account is not a member of the Administrators group."
+    if (Test-GuestInAdminGroup) {
+        Write-Host "[*] Removing Guest from Administrators group..." -ForegroundColor Yellow
+        try {
+            Remove-LocalGroupMember -Group $LocalAdminGroup -Member $GuestAccount -ErrorAction Stop
+            Write-Host "✓ Guest removed from Administrators group (SECURE)." -ForegroundColor Green
+        }
+        catch {
+            Write-Host "✗ Failed to remove Guest from Administrators group: $($_.Exception.Message)" -ForegroundColor Red
+        }
+    }
+    else {
+        Write-Host "ℹ Guest is not a member of Administrators group." -ForegroundColor Gray
     }
 }
 
-# Check the variable and perform the appropriate action
-if ($AddGuestToAdminGroup -eq $True) {
+# -------------------------------------------------------------
+# 6. Execute based on user intent
+# -------------------------------------------------------------
+if ($AddGuestToAdminGroup) {
     Add-GuestToAdminGroup
-} else {
-    Remove-GuestFromAdminGroup
-
 }
+else {
+    Remove-GuestFromAdminGroup
+}
+
+Write-Host "`n=== Guest Local Administrators Group Toggle Complete ===`n" -ForegroundColor Cyan
