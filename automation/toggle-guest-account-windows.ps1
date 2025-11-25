@@ -1,41 +1,78 @@
- # PowerShell Script to Toggle the "Guest" Account on Windows Server 2019
+<#
+.SYNOPSIS
+    Enables or disables the Guest account on Windows.
 
-# Step 1: Define the desired action for the Guest account
-# Set this variable to $true to enable the Guest account or $false to disable it
-$enableGuestAccount = $true  # Change to $false to disable the account
+.DESCRIPTION
+    Allows toggling the built-in Windows Guest account by setting
+    $EnableGuestAccount to either $true or $false.
 
-# Step 2: Define the username for the Guest account
-$guestAccount = "Guest"
+    This script uses the legacy "net user" command for compatibility,
+    but provides clean output and idempotent behavior.
+#>
 
-# Step 3: Check the current status of the Guest account
-# Using net user command to check if the Guest account is enabled or disabled
-$guestStatus = net user $guestAccount
+Write-Host "`n=== Guest Account Toggle Script Starting ===" -ForegroundColor Cyan
 
-# Function to enable or disable the Guest account based on the desired action
-function Toggle-GuestAccount {
+# -------------------------------------------------------------
+# 1. Desired action
+# -------------------------------------------------------------
+# Set to $true to enable Guest, $false to disable
+$EnableGuestAccount = $true     # Change as needed
+
+# Built-in Guest account name
+$GuestAccount = "Guest"
+
+# -------------------------------------------------------------
+# 2. Function to check current Guest account status
+# -------------------------------------------------------------
+function Get-GuestAccountStatus {
+    $status = net user $GuestAccount 2>$null
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "The Guest account could not be queried. It may not exist on this system."
+        exit 1
+    }
+
+    if ($status -match "Account active\s+Yes") { return $true }
+    if ($status -match "Account active\s+No")  { return $false }
+
+    Write-Warning "Unable to determine Guest account status."
+    return $null
+}
+
+# -------------------------------------------------------------
+# 3. Enable or disable Guest account
+# -------------------------------------------------------------
+function Set-GuestAccountState {
     param (
-        [string]$accountName,
-        [bool]$enableAccount
+        [bool]$Enable
     )
-    
-    if ($enableAccount) {
-        # Enable the Guest account if it is currently disabled
-        if ($guestStatus -like "*Account active*No*") {
-            net user $accountName /active:yes
-            Write-Host "The Guest account has been successfully enabled."
+
+    $current = Get-GuestAccountStatus
+
+    if ($current -eq $Enable) {
+        if ($Enable) {
+            Write-Host "✓ Guest account is already ENABLED." -ForegroundColor Green
         } else {
-            Write-Host "The Guest account is already enabled."
+            Write-Host "✓ Guest account is already DISABLED." -ForegroundColor Green
         }
-    } else {
-        # Disable the Guest account if it is currently enabled
-        if ($guestStatus -like "*Account active*Yes*") {
-            net user $accountName /active:no
-            Write-Host "The Guest account has been successfully disabled."
-        } else {
-            Write-Host "The Guest account is already disabled."
-        }
+        return
+    }
+
+    if ($Enable) {
+        Write-Host "[*] Enabling Guest account..." -ForegroundColor Yellow
+        net user $GuestAccount /active:yes | Out-Null
+        Write-Host "✓ Guest account enabled." -ForegroundColor Green
+    }
+    else {
+        Write-Host "[*] Disabling Guest account..." -ForegroundColor Yellow
+        net user $GuestAccount /active:no | Out-Null
+        Write-Host "✓ Guest account disabled." -ForegroundColor Green
     }
 }
 
-# Step 4: Call the function to toggle the Guest account status
-Toggle-GuestAccount -accountName $guestAccount -enableAccount $enableGuestAccount
+# -------------------------------------------------------------
+# 4. Execute toggle
+# -------------------------------------------------------------
+Set-GuestAccountState -Enable $EnableGuestAccount
+
+Write-Host "`n=== Guest Account Toggle Complete ===`n" -ForegroundColor Cyan
