@@ -1,78 +1,113 @@
 <#
 .SYNOPSIS
-    Toggles ciphersuites (secure vs insecure) on the system.
-    Please test thoroughly in a non-production environment before deploying widely.
-    Make sure to run as Administrator or with appropriate privileges.
+    Toggles Windows TLS/SSL cipher suites between secure and insecure sets.
+
+.DESCRIPTION
+    This script sets the system's SSL/TLS cipher suite order to one of two modes:
+      • Secure (production-safe)
+      • Insecure (vulnerability-creation for Cyber Range labs)
+
+    Cipher suite configuration is applied using Group Policy registry keys.
+    A reboot is required for changes to take effect.
 
 .NOTES
     Author        : Jordan Calvert
-    Date Created  : 2024-09-09
-    Last Modified : 2024-09-09
-    Version       : 1.0
-
-.TESTED ON
-    Date(s) Tested  : 2024-09-09
-    Tested By       : Jordan Calvert
-    Systems Tested  : Windows Server 2019 Datacenter, Build 1809
-    PowerShell Ver. : 5.1.17763.6189
-
-.USAGE
-    Set [$secureEnvironment = $true] to secure the system
-    Example syntax:
-    PS C:\> .\toggle-insecure-cipher-suites.ps1 
+    Last Modified : 2025-11-25
+    Tested On     : Windows Server 2019, Windows 10, Windows 11
 #>
 
+Write-Host "`n=== Cipher Suite Toggle Starting ===" -ForegroundColor Cyan
 
-# Set this variable to $true for a secure environment, $false for an insecure environment
-$secureEnvironment = $false
+# -------------------------------------------------------------
+# 1. Toggle Mode
+# -------------------------------------------------------------
+# true  = secure (remediation)
+# false = insecure (vulnerability creation)
+$SecureEnvironment = $false     # <-- CHANGE as needed
 
-# Define the secure cipher suite list as a comma-separated string
-$secureCipherSuites = "TLS_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_NULL_SHA256,TLS_RSA_WITH_NULL_SHA,TLS_PSK_WITH_AES_256_GCM_SHA384,TLS_PSK_WITH_AES_128_GCM_SHA256,TLS_PSK_WITH_AES_256_CBC_SHA384,TLS_PSK_WITH_AES_128_CBC_SHA256,TLS_PSK_WITH_NULL_SHA384,TLS_PSK_WITH_NULL_SHA256"
+# -------------------------------------------------------------
+# 2. Cipher Suite Definitions
+# -------------------------------------------------------------
+$SecureCipherSuites = @(
+    "TLS_AES_256_GCM_SHA384","TLS_AES_128_GCM_SHA256",
+    "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384","TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+    "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384","TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+    "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384","TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
+    "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384","TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+    "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384","TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+    "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA","TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+    "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA","TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+    "TLS_RSA_WITH_AES_256_GCM_SHA384","TLS_RSA_WITH_AES_128_GCM_SHA256",
+    "TLS_RSA_WITH_AES_256_CBC_SHA256","TLS_RSA_WITH_AES_128_CBC_SHA256",
+    "TLS_RSA_WITH_AES_256_CBC_SHA","TLS_RSA_WITH_AES_128_CBC_SHA",
+    "TLS_RSA_WITH_NULL_SHA256","TLS_RSA_WITH_NULL_SHA",
+    "TLS_PSK_WITH_AES_256_GCM_SHA384","TLS_PSK_WITH_AES_128_GCM_SHA256",
+    "TLS_PSK_WITH_AES_256_CBC_SHA384","TLS_PSK_WITH_AES_128_CBC_SHA256",
+    "TLS_PSK_WITH_NULL_SHA384","TLS_PSK_WITH_NULL_SHA256"
+) -join ','
 
-# Define the insecure cipher suite list, which includes all secure ciphers plus additional insecure ones
-$insecureCipherSuites = "TLS_AES_256_GCM_SHA384,TLS_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_NULL_SHA256,TLS_RSA_WITH_NULL_SHA,TLS_PSK_WITH_AES_256_GCM_SHA384,TLS_PSK_WITH_AES_128_GCM_SHA256,TLS_PSK_WITH_AES_256_CBC_SHA384,TLS_PSK_WITH_AES_128_CBC_SHA256,TLS_PSK_WITH_NULL_SHA384,TLS_PSK_WITH_NULL_SHA256,TLS_RSA_WITH_DES_CBC_SHA,TLS_RSA_WITH_3DES_EDE_CBC_SHA,TLS_RSA_WITH_RC4_128_SHA,TLS_RSA_WITH_RC4_128_MD5,TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA,TLS_RSA_EXPORT1024_WITH_RC4_56_SHA,TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5,TLS_RSA_EXPORT_WITH_RC4_40_MD5,SSL_RSA_WITH_DES_CBC_SHA,SSL_RSA_WITH_3DES_EDE_CBC_SHA,SSL_RSA_WITH_RC4_128_SHA,SSL_RSA_WITH_RC4_128_MD5,SSL_RSA_EXPORT1024_WITH_DES_CBC_SHA,SSL_RSA_EXPORT1024_WITH_RC4_56_SHA,SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5,SSL_RSA_EXPORT_WITH_RC4_40_MD5"
+$InsecureCipherSuites = @(
+    $SecureCipherSuites.Split(','),
+    # Insecure, export, weak, deprecated
+    "TLS_RSA_WITH_DES_CBC_SHA","TLS_RSA_WITH_3DES_EDE_CBC_SHA",
+    "TLS_RSA_WITH_RC4_128_SHA","TLS_RSA_WITH_RC4_128_MD5",
+    "TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA","TLS_RSA_EXPORT1024_WITH_RC4_56_SHA",
+    "TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5","TLS_RSA_EXPORT_WITH_RC4_40_MD5",
+    "SSL_RSA_WITH_DES_CBC_SHA","SSL_RSA_WITH_3DES_EDE_CBC_SHA",
+    "SSL_RSA_WITH_RC4_128_SHA","SSL_RSA_WITH_RC4_128_MD5",
+    "SSL_RSA_EXPORT1024_WITH_DES_CBC_SHA","SSL_RSA_EXPORT1024_WITH_RC4_56_SHA",
+    "SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5","SSL_RSA_EXPORT_WITH_RC4_40_MD5"
+) -join ','
 
-# Define the registry path where the cipher suite order is stored
-$regPath = "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002"
-
-# Check if the registry key exists, if not, create it
-if (-not (Test-Path $regPath)) {
-    New-Item -Path $regPath -Force
+# -------------------------------------------------------------
+# 3. Determine mode
+# -------------------------------------------------------------
+if ($SecureEnvironment) {
+    $SelectedCipherSuites = $SecureCipherSuites
+    Write-Host "[*] Configuring SECURE cipher suite order..." -ForegroundColor Yellow
+}
+else {
+    $SelectedCipherSuites = $InsecureCipherSuites
+    Write-Host "[*] Configuring INSECURE cipher suite order (lab vulnerability)..." -ForegroundColor Red
 }
 
-# Determine the cipher suites list based on the secureEnvironment variable
-if ($secureEnvironment) {
-    $selectedCipherSuites = $secureCipherSuites
-    Write-Output "Configuring a secure environment..."
-} else {
-    $selectedCipherSuites = $insecureCipherSuites
-    Write-Output "Configuring an insecure environment..."
+# -------------------------------------------------------------
+# 4. Registry Paths
+# -------------------------------------------------------------
+$RegPath = "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002"
+
+if (-not (Test-Path $RegPath)) {
+    New-Item -Path $RegPath -Force | Out-Null
 }
 
-# Set the cipher suite order in the registry
-Set-ItemProperty -Path $regPath -Name "Functions" -Value $selectedCipherSuites
+# -------------------------------------------------------------
+# 5. Apply Cipher Suites
+# -------------------------------------------------------------
+try {
+    Set-ItemProperty -Path $RegPath -Name "Functions" -Value $SelectedCipherSuites -Force
+    Set-ItemProperty -Path $RegPath -Name "Enabled"   -Value 1 -Force
 
-# Enable SSL Cipher Suite Order in Group Policy
-$policyPath = "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL"
-$policyKey = "00010002"
-$policyName = "Functions"
-
-if (-not (Test-Path "$policyPath\$policyKey")) {
-    New-Item -Path "$policyPath" -Name "$policyKey" -Force
+    Write-Host "✓ Cipher suites successfully written to policy." -ForegroundColor Green
+}
+catch {
+    Write-Host "✗ Failed to update cipher suites: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
 }
 
-# Apply the selected cipher suites to the Group Policy
-Set-ItemProperty -Path "$policyPath\$policyKey" -Name $policyName -Value $selectedCipherSuites
+# -------------------------------------------------------------
+# 6. Verify
+# -------------------------------------------------------------
+try {
+    $Result = (Get-ItemProperty -Path $RegPath -Name "Functions").Functions
+    Write-Host "`nCurrent Cipher Suite Order:" -ForegroundColor Cyan
+    $Result
+}
+catch {
+    Write-Host "✗ Unable to read back cipher suite configuration." -ForegroundColor Red
+}
 
-# Verify the changes
-Write-Output "Cipher Suites have been updated to:"
-Get-ItemProperty -Path $regPath -Name "Functions" | Select-Object -ExpandProperty Functions
-
-# Enable SSL Cipher Suite Order policy
-Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Cryptography\Configuration\SSL\00010002" -Name "Enabled" -Value 1
-
-# Inform the user to restart the server for changes to take effect
-Write-Output "Please restart the server to apply the changes."
-
-# End of combined script
- 
+# -------------------------------------------------------------
+# 7. Final Message
+# -------------------------------------------------------------
+Write-Host "`nA restart is required for cipher suite changes to take effect." -ForegroundColor Cyan
+Write-Host "=== Cipher Suite Toggle Complete ===`n" -ForegroundColor Cyan
