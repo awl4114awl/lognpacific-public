@@ -1,12 +1,18 @@
- # Define the path to the uninstall helper
-$installerPath = 'C:\Users\labuser\Downloads\Firefox Setup 110.0b5.exe'
+# Path to the Firefox installer
+$InstallerPath = "C:\Users\labuser\Downloads\Firefox Setup 110.0b5.exe"
 
-# Check if the uninstall helper exists
-if (Test-Path $installerPath) {
-    # If the file exists, execute it silently
-    Invoke-Expression "& `"$installerPath`" /S"
-    Write-Host "Firefox install command executed."
+# Verify installer exists
+if (Test-Path -Path $InstallerPath) {
+
+    try {
+        # Run the installer silently
+        Start-Process -FilePath $InstallerPath -ArgumentList "/S" -Wait -NoNewWindow
+        Write-Host "Firefox installed successfully."
+    }
+    catch {
+        Write-Host "An error occurred while running the Firefox installer: $($_.Exception.Message)"
+    }
+
 } else {
-    Write-Host "Firefox installer does not exist at the specified path."
+    Write-Host "Firefox installer not found at: $InstallerPath"
 }
- 
