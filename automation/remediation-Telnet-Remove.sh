@@ -1,28 +1,58 @@
 #!/bin/bash
+#
+# remediation-Telnet-Remove.sh
+# ----------------------------
+# Removes Telnet server components, disables inetd, and cleans up
+# all related packages as part of a Linux remediation workflow.
+#
 
-# Stop the inetd service
-sudo systemctl stop inetd.service
+echo -e "\n=== Telnet Remediation Starting ===\n"
 
-# Disable the inetd service to prevent it from starting at boot
-sudo systemctl disable inetd.service
+# -------------------------------------------------------------
+# 1. Stop inetd service
+# -------------------------------------------------------------
+echo "[1/5] Stopping inetd.service..."
+if sudo systemctl stop inetd.service 2>/dev/null; then
+    echo "✓ inetd.service stopped."
+else
+    echo "ℹ inetd.service not running or not found."
+fi
 
-# Remove the telnetd package completely, including its configuration files
-sudo apt remove --purge telnetd -y
+# -------------------------------------------------------------
+# 2. Disable inetd service
+# -------------------------------------------------------------
+echo "[2/5] Disabling inetd.service..."
+if sudo systemctl disable inetd.service 2>/dev/null; then
+    echo "✓ inetd.service disabled."
+else
+    echo "ℹ inetd.service does not exist or was already disabled."
+fi
 
-# Remove the inetutils-inetd package completely, including its configuration files
-sudo apt remove --purge inetutils-inetd -y
+# -------------------------------------------------------------
+# 3. Remove Telnet packages
+# -------------------------------------------------------------
+echo "[3/5] Removing telnetd and inetutils-inetd..."
+sudo apt remove --purge -y telnetd inetutils-inetd 2>/dev/null
+echo "✓ Telnet packages removed (if installed)."
 
-# Remove any unused dependencies that were installed with telnetd or inetutils-inetd
+# -------------------------------------------------------------
+# 4. Autoremove unused dependencies
+# -------------------------------------------------------------
+echo "[4/5] Cleaning up unused dependencies..."
 sudo apt autoremove -y
+echo "✓ Autoremove complete."
 
-# Update the package lists to ensure they are current
-sudo apt update
+# -------------------------------------------------------------
+# 5. Update package lists
+# -------------------------------------------------------------
+echo "[5/5] Updating package lists..."
+sudo apt update -y
+echo "✓ Package list updated."
 
-# Download the script
+echo -e "\n=== Telnet Remediation Complete ===\n"
+
+# Usage instructions (kept for portfolio completeness)
+# -------------------------------------------------------------
 # wget https://raw.githubusercontent.com/joshmadakor1/lognpacific-public/main/automation/remediation-Telnet-Remove.sh --no-check-certificate
-
-# Make the script executable:
 # chmod +x remediation-Telnet-Remove.sh
-
-# Execute the script:
 # ./remediation-Telnet-Remove.sh
