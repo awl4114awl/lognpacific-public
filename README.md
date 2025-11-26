@@ -8,8 +8,7 @@
 
 ---
 
-> ## ⚠️ Ethical & Legal Notice
-> This repository is for training and authorized research only. Please do not deploy these scripts on systems you do not own, enable insecure protocols in production, downgrade security configuration outside a lab. You are fully responsible for how you use this code.
+> ⚠️ This repository is for training and authorized research only. Please do not deploy these scripts on systems you do not own, enable insecure protocols in production, downgrade security configuration outside a lab. You are fully responsible for how you use this code.
 
 ---
 
