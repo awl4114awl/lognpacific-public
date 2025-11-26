@@ -6,8 +6,6 @@
 ![Linux](https://img.shields.io/badge/Linux-Security_Hardening-FCC624?style=for-the-badge\&logo=linux\&logoColor=black)
 ![MITRE](https://img.shields.io/badge/MITRE-ATT%26CK_Based-DC143C?style=for-the-badge)
 
----
-
 > ⚠️ This repository is for training and authorized research only. Please do not deploy these scripts on systems you do not own, enable insecure protocols in production, downgrade security configuration outside a lab. You are fully responsible for how you use this code.
 
 ---
