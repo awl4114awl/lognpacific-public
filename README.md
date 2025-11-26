@@ -8,6 +8,11 @@
 
 ---
 
+> ## ⚠️ Ethical & Legal Notice
+> This repository is for training and authorized research only. Please do not deploy these scripts on systems you do not own, enable insecure protocols in production, downgrade security configuration outside a lab. You are fully responsible for how you use this code.
+
+---
+
 ## 🪟 Overview
 
 This repository contains a collection of **PowerShell** and **Bash** automation scripts used throughout the **LOGN Pacific Cyber Range** environment.
@@ -25,9 +30,9 @@ These scripts are used across Azure-hosted Windows and Linux VMs as part of hand
 
 ## What This Repo Is For
 
-This repository enables repeatable, automated configuration changes such as:
+This repository enables repeatable, automated configuration changes in order to create vulnerabilities / remediate vulnerabilities.
 
-### **Create Vulnerabilities**
+#### Create Vulnerabilities 
 
 Used for:
 
@@ -45,7 +50,7 @@ Examples include:
 * Enabling insecure **TLS/SSL** protocols (SSL 2.0 / 3.0 / TLS 1.0 / 1.1)
 * Downgrading ciphersuites
 
-### **Remediate Vulnerabilities**
+#### Remediate Vulnerabilities
 
 Used for:
 
@@ -110,15 +115,3 @@ lognpacific-public/
 These scripts directly support hands-on labs for vulnerability scanning, detection engineering, and blue team cybersecurity workflows.
 
 ---
-
-## ⚠️ Ethical & Legal Notice
-
-This repository is for **training and authorized research only**.
-
-Do **NOT**:
-
-* deploy these scripts on systems you do not own
-* enable insecure protocols in production
-* downgrade security configuration outside a lab
-
-You are fully responsible for how you use this code.
