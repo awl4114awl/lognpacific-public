@@ -1,114 +1,110 @@
-# 🚀 LOGN Pacific — Automation & Vulnerability Scripts
+# LOGN Pacific Cyber Range Automation
 
-![PowerShell](https://img.shields.io/badge/PowerShell-Automation-5391FE?style=for-the-badge\&logo=powershell\&logoColor=white)
-![Bash](https://img.shields.io/badge/Bash-Automation-333?style=for-the-badge\&logo=gnubash)
-![Windows](https://img.shields.io/badge/Windows-Security_Hardening-0078D4?style=for-the-badge\&logo=windows)
-![Linux](https://img.shields.io/badge/Linux-Security_Hardening-FCC624?style=for-the-badge\&logo=linux\&logoColor=black)
-![MITRE](https://img.shields.io/badge/MITRE-ATT%26CK_Based-DC143C?style=for-the-badge)
+This repository contains automation used inside the LOGN Pacific Cyber Range to create, detect, remediate, and validate security weaknesses across Windows and Linux systems.
 
-> ⚠️ This repository is for training and authorized research only. Please do not deploy these scripts on systems you do not own, enable insecure protocols in production, downgrade security configuration outside a lab. You are fully responsible for how you use this code.
+The scripts in this repo are not standalone tools. They are building blocks used to simulate real enterprise security workflows such as vulnerability scanning, remediation validation, detection engineering, and compliance testing.
 
 ---
 
-## 🪟 Overview
+## Purpose
 
-This repository contains a collection of **PowerShell** and **Bash** automation scripts used throughout the **LOGN Pacific Cyber Range** environment.
-These scripts support:
+This repository exists to make security state changes:
 
-* **Vulnerability Creation** (intentionally weakening systems for training exercises)
-* **Vulnerability Remediation** (secure configuration + patching)
-* **Windows & Linux OS Hardening**
-* **Protocol, Cipher, and Feature Toggling**
-* **Software-Based Vulnerability Labs (Firefox, 7-Zip, Wireshark, Telnet, OpenSSL, etc.)**
+- repeatable
+- observable
+- reversible
+- measurable
 
-These scripts are used across Azure-hosted Windows and Linux VMs as part of hands-on cybersecurity labs involving Tenable, Microsoft Defender for Endpoint, and real-world enterprise security workflows.
+Rather than manually misconfiguring systems or fixing findings by hand, these scripts allow controlled security posture changes that can be scanned, detected, investigated, and verified.
+
+The focus is not exploitation.  
+The focus is detection, response, and remediation.
 
 ---
 
-## What This Repo Is For
+## How This Repo Is Used
 
-This repository enables repeatable, automated configuration changes in order to create vulnerabilities / remediate vulnerabilities.
+Scripts in this repository are executed inside Azure-hosted lab virtual machines as part of structured security exercises.
 
-#### Create Vulnerabilities 
+Typical workflow:
 
-Used for:
+1. Introduce a controlled weakness
+2. Scan or detect the change using enterprise tooling
+3. Investigate the signal or finding
+4. Remediate using automation
+5. Re-scan to confirm resolution
 
-* Threat detection labs
-* Attack simulation
-* Vulnerability scanning practice
-* Blue team investigation exercises
+This mirrors how vulnerabilities are handled in real production environments, without relying on unsafe ad-hoc configuration changes.
+
+---
+
+## Types of Automation
+
+### Security Weakening
+
+Scripts used to intentionally reduce security posture for testing and detection purposes.
 
 Examples include:
 
-* Enabling **SMBv1**
-* Installing outdated **Firefox** or **OpenSSL**
-* Allowing **root SSH login**
-* Weakening Linux file permissions (`/etc/passwd`, `/etc/shadow`)
-* Enabling insecure **TLS/SSL** protocols (SSL 2.0 / 3.0 / TLS 1.0 / 1.1)
-* Downgrading ciphersuites
+- enabling legacy services such as SMBv1 or Telnet
+- installing outdated or vulnerable software
+- weakening authentication or authorization paths
+- enabling deprecated TLS or cipher configurations
+- modifying sensitive Linux permissions
 
-#### Remediate Vulnerabilities
+These scripts are used to generate realistic findings for scanners, EDR tools, and SIEM pipelines.
 
-Used for:
+---
 
-* Hardening baselines
-* Patch validation
-* Tenable remediation testing
-* Compliance exercises (CIS / STIG-inspired)
+### Security Remediation
+
+Scripts used to restore secure configurations and validate remediation workflows.
 
 Examples include:
 
-* Disabling legacy protocols
-* Removing vulnerable software (7-Zip, Wireshark, Firefox)
-* Enforcing TLS 1.2
-* Re-enabling secure permissions
-* Updating/downgrading OpenSSL
-* OS patching & reboot automation
+- removing vulnerable software
+- disabling insecure protocols and services
+- enforcing modern TLS and cipher standards
+- restoring secure permissions
+- patching operating systems
+- automating reboot and validation steps
+
+Remediation scripts are designed to be idempotent and auditable where possible.
 
 ---
 
-## 📁 Repository Structure
+## Cyber Range Context
 
-```
-lognpacific-public/
-│
-├── automation/
-│   ├── Firefox-Install.ps1
-│   ├── SMBv1-Create-Vulnerability.ps1
-│   ├── final-hardening.ps1
-│   ├── passwd-Linux-Create-Vulnerability.ps1
-│   ├── passwd-Linux-Remediate.ps1
-│   ├── remediation-FireFox-uninstall.ps1
-│   ├── remediation-SMBv1.ps1
-│   ├── remediation-Telnet-Remove.sh
-│   ├── remediation-openssl-3.0.5-install.sh
-│   ├── remediation-root-password.sh
-│   ├── remediation-wireshark-uninstall.ps1
-│   ├── root-password-Create-Vulnerability.sh
-│   ├── telnet-Create-Vulnerability.sh
-│   ├── toggle-guest-account-windows.ps1
-│   ├── toggle-insecure-cipher-suites.ps1
-│   ├── toggle-secure-cipher-suites.ps1
-│   ├── toggle_guest_local_administrators.ps1
-│   ├── toggle_protocols.ps1
-│   ├── ubuntu-os-update-remediation.sh
-│   ├── uninstall-7zip.ps1
-│
-└── (additional folders/scripts added over time)
-```
+This repository supports a live cyber range environment built in Azure.
+
+It is used alongside:
+
+- authenticated vulnerability scanning
+- endpoint detection and response tooling
+- log aggregation and investigation
+- compliance-oriented testing inspired by STIG and CIS guidance
+
+The repository evolves as new labs, detections, and remediation scenarios are added.
 
 ---
 
-## Technology Used
+## Tooling and Platforms
 
-* **PowerShell 5.1+** (Windows Server 2019/2022/2025)
-* **Bash** (Ubuntu / Debian)
-* **Azure Virtual Machines**
-* **Tenable Vulnerability Management**
-* **Microsoft Defender for Endpoint**
-* **Microsoft Sentinel**
-* **MITRE ATT&CK-aligned detection logic**
-
-These scripts directly support hands-on labs for vulnerability scanning, detection engineering, and blue team cybersecurity workflows.
+- PowerShell for Windows automation
+- Bash for Linux automation
+- Azure virtual machines
+- Tenable Vulnerability Management
+- Microsoft Defender for Endpoint
+- Microsoft Sentinel
+- MITRE ATT&CK–aligned detection logic
 
 ---
+
+## Safety Notice
+
+This repository is intended for training and authorized research only.
+
+Scripts may intentionally weaken system security.  
+They should only be executed in controlled lab environments on systems you own or are authorized to test.
+
+You are responsible for how this code is used.
