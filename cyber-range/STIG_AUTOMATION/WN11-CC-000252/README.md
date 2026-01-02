@@ -132,19 +132,11 @@ To confirm that compliance with WN11-CC-000252 is dependent on policy-backed reg
 
 The “Enables or disables Windows Game Recording and Broadcasting” policy is enforced through the following registry location:
 
-```
-
-HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR
-
-```
+`HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR`
 
 When the policy is set to Disabled, it creates the following value:
 
-```
-
-AllowGameDVR (DWORD) = 0
-
-````
+`AllowGameDVR (DWORD) = 0`
 
 <p align="left">
   <img src="screenshots/Screenshot 2026-01-02 122857.png" width="750">
@@ -243,5 +235,6 @@ The scan confirmed that STIG WN11-CC-000252 was successfully applied and passed,
 ### 9️⃣ Conclusion
 
 This lab demonstrates a complete STIG suggesting, validation, and automation lifecycle. By manually implementing, reverting, and then automating the STIG control, I validated both my understanding of DISA STIG requirements and my ability to enforce them programmatically.
+
 
 This workflow reflects real-world compliance operations where security controls must be validated manually, automated reliably, and continuously verified through authenticated scanning.
