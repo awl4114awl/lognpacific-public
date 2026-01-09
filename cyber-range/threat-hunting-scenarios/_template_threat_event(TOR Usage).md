@@ -1,97 +1,147 @@
-# Threat Event (Unauthorized TOR Usage)
-**Unauthorized TOR Browser Installation and Use**
-
-## Steps the "Bad Actor" took Create Logs and IoCs:
-1. Download the TOR browser installer: https://www.torproject.org/download/
-2. Install it silently: ```tor-browser-windows-x86_64-portable-14.0.1.exe /S```
-3. Opens the TOR browser from the folder on the desktop
-4. Connect to TOR and browse a few sites. For example:
-   - **WARNING: The links to onion sites change a lot and these have changed. However if you connect to Tor and browse around normal sites a bit, the necessary logs should still be created:**
-   - Current Dread Forum: ```dreadytofatroptsdj6io7l3xptbet6onoyno2yv7jicoxknyazubrad.onion```
-   - Dark Markets Forum: ```dreadytofatroptsdj6io7l3xptbet6onoyno2yv7jicoxknyazubrad.onion/d/DarkNetMarkets```
-   - Current Elysium Market: ```elysiumutkwscnmdohj23gkcyp3ebrf4iio3sngc5tvcgyfp4nqqmwad.top/login```
-
-6. Create a folder on your desktop called ```tor-shopping-list.txt``` and put a few fake (illicit) items in there
-7. Delete the file.
+#  Threat Event: <THREAT NAME>
+**<Short, descriptive subtitle of the threat>**
 
 ---
 
-## Tables Used to Detect IoCs:
-| **Parameter**       | **Description**                                                              |
-|---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceFileEvents|
-| **Info**|https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceinfo-table|
-| **Purpose**| Used for detecting TOR download and installation, as well as the shopping list creation and deletion. |
+## Overview
 
-| **Parameter**       | **Description**                                                              |
-|---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceProcessEvents|
-| **Info**|https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceinfo-table|
-| **Purpose**| Used to detect the silent installation of TOR as well as the TOR browser and service launching.|
+This document defines a threat event designed to intentionally generate endpoint telemetry and indicators of compromise (IoCs) for threat hunting and detection validation. The activity outlined below represents simulated adversary behavior executed in a controlled lab environment.
 
-| **Parameter**       | **Description**                                                              |
-|---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceNetworkEvents|
-| **Info**|https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table|
-| **Purpose**| Used to detect TOR network activity, specifically tor.exe and firefox.exe making connections over ports to be used by TOR (9001, 9030, 9040, 9050, 9051, 9150).|
+This threat event serves as the **event creation phase** and is intended to be followed by a separate threat hunting investigation using collected telemetry.
 
 ---
 
-## Related Queries:
+## Steps the “Bad Actor” Took to Create Logs and IoCs
+
+1. **Prepare the environment**
+   - Provision a test endpoint (virtual or physical) in a controlled environment
+   - Ensure endpoint telemetry is enabled and actively reporting
+
+2. **Download the required tooling**
+   - Example:
+     ```
+     <URL or source of tool>
+     ```
+
+3. **Install the tool (if applicable)**
+   - Example silent install:
+     ```cmd
+     <installer-name> /S
+     ```
+
+4. **Execute the tool**
+   - Launch the application from disk
+   - Allow all supporting processes/services to start
+
+5. **Generate network activity**
+   - Perform actions that cause outbound connections
+   - Browse benign sites or trigger expected traffic patterns
+   - ⚠️ *Note: Visiting normal sites is sufficient to generate telemetry*
+
+6. **Create user artifacts**
+   - Example:
+     - Create a file named:
+       ```
+       <artifact-name>.txt
+       ```
+     - Add fictitious or placeholder content
+
+7. **Cleanup activity**
+   - Delete the created artifact(s)
+   - Close the application
+
+---
+
+## Tables Used to Detect IoCs
+
+### DeviceFileEvents
+
+| Parameter | Description |
+|---------|------------|
+| **Name** | DeviceFileEvents |
+| **Info** | https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicefileevents-table |
+| **Purpose** | Detects file downloads, installations, file creation, modification, and deletion related to the threat activity |
+
+---
+
+### DeviceProcessEvents
+
+| Parameter | Description |
+|---------|------------|
+| **Name** | DeviceProcessEvents |
+| **Info** | https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceprocessevents-table |
+| **Purpose** | Detects execution of installers, binaries, services, and application processes |
+
+---
+
+### DeviceNetworkEvents
+
+| Parameter | Description |
+|---------|------------|
+| **Name** | DeviceNetworkEvents |
+| **Info** | https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table |
+| **Purpose** | Detects outbound network connections, remote IPs, ports, and URLs associated with the threat |
+
+---
+
+## Related Detection Queries
+
 ```kql
-// Installer name == tor-browser-windows-x86_64-portable-(version).exe
-// Detect the installer being downloaded
+// Detect suspicious file downloads
 DeviceFileEvents
-| where FileName startswith "tor"
+| where FileName contains "<keyword>"
+| order by Timestamp asc
 
-// TOR Browser being silently installed
-// Take note of two spaces before the /S (I don't know why)
+// Detect installer or binary execution
 DeviceProcessEvents
-| where ProcessCommandLine contains "tor-browser-windows-x86_64-portable-14.0.1.exe  /S"
-| project Timestamp, DeviceName, ActionType, FileName, ProcessCommandLine
+| where ProcessCommandLine contains "<binary-name>"
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine
 
-// TOR Browser or service was successfully installed and is present on the disk
-DeviceFileEvents
-| where FileName has_any ("tor.exe", "firefox.exe")
-| project  Timestamp, DeviceName, RequestAccountName, ActionType, InitiatingProcessCommandLine
-
-// TOR Browser or service was launched
+// Detect tool execution
 DeviceProcessEvents
-| where ProcessCommandLine has_any("tor.exe","firefox.exe")
-| project  Timestamp, DeviceName, AccountName, ActionType, ProcessCommandLine
+| where FileName has_any ("<binary1>", "<binary2>")
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine
 
-// TOR Browser or service is being used and is actively creating network connections
+// Detect related network activity
 DeviceNetworkEvents
-| where InitiatingProcessFileName in~ ("tor.exe", "firefox.exe")
-| where RemotePort in (9001, 9030, 9040, 9050, 9051, 9150)
-| project Timestamp, DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName, RemoteIP, RemotePort, RemoteUrl
-| order by Timestamp desc
+| where InitiatingProcessFileName in ("<binary1>", "<binary2>")
+| where RemotePort in (<port-list>)
+| project Timestamp, DeviceName, InitiatingProcessAccountName, RemoteIP, RemotePort, RemoteUrl
+| order by Timestamp asc
 
-// User shopping list was created and, changed, or deleted
+// Detect user artifact creation or deletion
 DeviceFileEvents
-| where FileName contains "shopping-list.txt"
-```
+| where FileName contains "<artifact-name>"
+| project Timestamp, DeviceName, ActionType, FileName, FolderPath
+````
 
 ---
 
-## Created By:
-- **Author Name**: Josh Madakor
-- **Author Contact**: https://www.linkedin.com/in/joshmadakor/
-- **Date**: August 31, 2024
+## Metadata
 
-## Validated By:
-- **Reviewer Name**: 
-- **Reviewer Contact**: 
-- **Validation Date**: 
+**Created By:**
+
+* **Author Name:** <Your Name>
+* **Author Contact:** <GitHub / LinkedIn (optional)>
+* **Date:** <Date>
+
+**Validated By:**
+
+* **Reviewer Name:**
+* **Reviewer Contact:**
+* **Validation Date:**
 
 ---
 
-## Additional Notes:
-- **None**
+## Additional Notes
+
+* This threat event was created for educational and detection validation purposes.
+* All activity was performed in a controlled lab environment.
 
 ---
 
-## Revision History:
-| **Version** | **Changes**                   | **Date**         | **Modified By**   |
-|-------------|-------------------------------|------------------|-------------------|
-| 1.0         | Initial draft                  | `September  6, 2024`  | `Josh Madakor`   
+## Revision History
+
+| Version | Changes       | Date   | Modified By |
+| ------- | ------------- | ------ | ----------- |
+| 1.0     | Initial draft | <Date> | <Name>      |
