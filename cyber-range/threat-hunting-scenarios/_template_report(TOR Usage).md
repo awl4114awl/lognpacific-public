@@ -1,121 +1,171 @@
-# Threat Hunt Report (Unauthorized TOR Usage)
-**Detection of Unauthorized TOR Browser Installation and Use**
-
-## Example Scenario:
-Management suspects that some employees may be using TOR browsers to bypass network security controls because recent network logs show unusual encrypted traffic patterns and connections to known TOR entry nodes. Additionally, there have been anonymous reports of employees discussing ways to access restricted sites during work hours. The goal is to detect any TOR usage and analyze related security incidents to mitigate potential risks.
+# Threat Hunt Report: <THREAT NAME>
+**<Short description of the detected activity>**
 
 ---
 
-## High-Level TOR related IoC Discovery Plan:
-1. Check DeviceFileEvents for any tor(.exe) or firefox(.exe) file events
-2. Check DeviceProcessEvents for any signs of installation or usage
-3. Check DeviceNetworkEvents for any signs of outgoing connections over known TOR ports
+## Overview
+
+This document represents the **threat hunting and investigation phase** following a simulated threat event. Using endpoint telemetry collected by Microsoft Defender for Endpoint (MDE), this report documents the discovery, analysis, and response to suspicious activity identified on an endpoint.
+
+The objective of this threat hunt is to validate detection logic, reconstruct attacker behavior, and determine appropriate response actions based on collected evidence.
+
+---
+
+## Example Scenario
+
+<Describe the business or security concern that triggered the hunt.>
+
+Example:
+> Management suspects that some employees may be using anonymization tools to bypass network security controls after observing unusual encrypted traffic patterns and connections to known anonymization nodes. The goal of this investigation is to detect any unauthorized usage and assess associated security risks.
+
+---
+
+## High-Level IoC Discovery Plan
+
+1. Review **DeviceFileEvents** for suspicious file downloads, installations, or user-created artifacts  
+2. Review **DeviceProcessEvents** for execution of unauthorized tools or services  
+3. Review **DeviceNetworkEvents** for anomalous outbound connections or protocol usage  
 
 ---
 
 ## Steps Taken
 
-1. ...
-2. ...
-3. ...
+### 1. File-Based Investigation
+Describe how file telemetry was reviewed and what indicators were discovered.
+
+> Example:  
+> The `DeviceFileEvents` table was queried to identify suspicious file activity related to the suspected threat, including installer downloads and user-created artifacts.
 
 ---
 
-## Chronological Events
+### 2. Process Execution Analysis
+Describe how process execution telemetry was reviewed.
 
-1. ...
-2. ...
-3. ...
+> Example:  
+> The `DeviceProcessEvents` table was analyzed to determine whether the suspected application was installed or executed, including the use of silent installation switches or abnormal execution paths.
+
+---
+
+### 3. Network Activity Review
+Describe how network telemetry was reviewed.
+
+> Example:  
+> The `DeviceNetworkEvents` table was examined to identify outbound connections initiated by suspicious processes, including connections over non-standard or anonymized ports.
+
+---
+
+## Chronological Event Timeline
+
+1. **Initial Indicator Identified**  
+   - Timestamp: `<date/time>`  
+   - Description of event  
+
+2. **Threat Execution or Usage Confirmed**  
+   - Timestamp: `<date/time>`  
+   - Description of activity  
+
+3. **Supporting or Follow-on Activity**  
+   - Timestamp: `<date/time>`  
+   - Description of behavior  
 
 ---
 
 ## Summary
 
-...
+Summarize the investigation in a concise, executive-style paragraph.
+
+> Example:  
+> The investigation confirmed unauthorized usage of <tool/technique> on the endpoint `<device-name>` by user `<username>`. Analysis of file, process, and network telemetry demonstrated deliberate installation, execution, and active use of the tool, indicating a potential policy violation and security risk.
 
 ---
 
 ## Response Taken
-TOR usage was confirmed on endpoint ______________. The device was isolated and the user's direct manager was notified.
+
+Describe the response actions taken.
+
+> Example:  
+> Unauthorized activity was confirmed on the affected endpoint. The device was isolated to prevent further activity, and the incident was documented for management review. The user’s direct manager was notified of the findings.
+
+> In a production environment, additional follow-up actions would include user interviews, acceptable use policy review, and implementation of preventative controls.
 
 ---
 
-## MDE Tables Referenced:
-| **Parameter**       | **Description**                                                              |
-|---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceFileEvents|
-| **Info**|https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceinfo-table|
-| **Purpose**| Used for detecting TOR download and installation, as well as the shopping list creation and deletion. |
+## MDE Tables Referenced
 
-| **Parameter**       | **Description**                                                              |
-|---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceProcessEvents|
-| **Info**|https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceinfo-table|
-| **Purpose**| Used to detect the silent installation of TOR as well as the TOR browser and service launching.|
-
-| **Parameter**       | **Description**                                                              |
-|---------------------|------------------------------------------------------------------------------|
-| **Name**| DeviceNetworkEvents|
-| **Info**|https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table|
-| **Purpose**| Used to detect TOR network activity, specifically tor.exe and firefox.exe making connections over ports to be used by TOR (9001, 9030, 9040, 9050, 9051, 9150).|
+### DeviceFileEvents
+| Parameter | Description |
+|--------|------------|
+| **Name** | DeviceFileEvents |
+| **Info** | https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicefileevents-table |
+| **Purpose** | Detects file downloads, installations, and artifact creation or deletion |
 
 ---
 
-## Detection Queries:
+### DeviceProcessEvents
+| Parameter | Description |
+|--------|------------|
+| **Name** | DeviceProcessEvents |
+| **Info** | https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-deviceprocessevents-table |
+| **Purpose** | Detects execution of binaries, installers, and services |
+
+---
+
+### DeviceNetworkEvents
+| Parameter | Description |
+|--------|------------|
+| **Name** | DeviceNetworkEvents |
+| **Info** | https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-devicenetworkevents-table |
+| **Purpose** | Detects outbound connections, remote IPs, ports, and URLs |
+
+---
+
+## Detection Queries
+
 ```kql
-// Installer name == tor-browser-windows-x86_64-portable-(version).exe
-// Detect the installer being downloaded
+// Detect suspicious file activity
 DeviceFileEvents
-| where FileName startswith "tor"
+| where FileName contains "<keyword>"
 
-// TOR Browser being silently installed
-// Take note of two spaces before the /S (I don't know why)
+// Detect suspicious process execution
 DeviceProcessEvents
-| where ProcessCommandLine contains "tor-browser-windows-x86_64-portable-14.0.1.exe  /S"
-| project Timestamp, DeviceName, ActionType, FileName, ProcessCommandLine
+| where ProcessCommandLine contains "<binary-name>"
 
-// TOR Browser or service was successfully installed and is present on the disk
-DeviceFileEvents
-| where FileName has_any ("tor.exe", "firefox.exe")
-| project  Timestamp, DeviceName, RequestAccountName, ActionType, InitiatingProcessCommandLine
-
-// TOR Browser or service was launched
-DeviceProcessEvents
-| where ProcessCommandLine has_any("tor.exe","firefox.exe")
-| project  Timestamp, DeviceName, AccountName, ActionType, ProcessCommandLine
-
-// TOR Browser or service is being used and is actively creating network connections
+// Detect suspicious network connections
 DeviceNetworkEvents
-| where InitiatingProcessFileName in~ ("tor.exe", "firefox.exe")
-| where RemotePort in (9001, 9030, 9040, 9050, 9051, 9150)
-| project Timestamp, DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName, RemoteIP, RemotePort, RemoteUrl
+| where InitiatingProcessFileName in ("<binary1>", "<binary2>")
+| where RemotePort in (<port-list>)
 | order by Timestamp desc
+````
 
-// User shopping list was created and, changed, or deleted
-DeviceFileEvents
-| where FileName contains "shopping-list.txt"
+---
+
+## Metadata
+
+**Created By:**
+
+* **Author Name:** <Your Name>
+* **Author Contact:** <GitHub / LinkedIn (optional)>
+* **Date:** <Date>
+
+**Validated By:**
+
+* **Reviewer Name:**
+* **Reviewer Contact:**
+* **Validation Date:**
+
+---
+
+## Additional Notes
+
+* This threat hunt was conducted in a controlled lab environment.
+* All activity was simulated for educational and detection validation purposes.
+
+---
+
+## Revision History
+
+| Version | Changes       | Date   | Modified By |
+| ------- | ------------- | ------ | ----------- |
+| 1.0     | Initial draft | <Date> | <Name>      |
+
 ```
-
----
-
-## Created By:
-- **Author Name**: Josh Madakor
-- **Author Contact**: https://www.linkedin.com/in/joshmadakor/
-- **Date**: August 31, 2024
-
-## Validated By:
-- **Reviewer Name**: 
-- **Reviewer Contact**: 
-- **Validation Date**: 
-
----
-
-## Additional Notes:
-- **None**
-
----
-
-## Revision History:
-| **Version** | **Changes**                   | **Date**         | **Modified By**   |
-|-------------|-------------------------------|------------------|-------------------|
-| 1.0         | Initial draft                  | `September  6, 2024`  | `Josh Madakor`   
