@@ -167,5 +167,3 @@ DeviceNetworkEvents
 | Version | Changes       | Date   | Modified By |
 | ------- | ------------- | ------ | ----------- |
 | 1.0     | Initial draft | <Date> | <Name>      |
-
-```
