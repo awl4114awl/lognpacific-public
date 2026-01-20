@@ -123,7 +123,7 @@ This information can be used to block malicious traffic, correlate activity acro
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 1.png" width="800" alt="Flag 1 – Initial Access via RDP" />
+  <img src="assets/flag 1.png" width="800" alt="Flag 1 – Initial Access" />
 </p>
 
 </details>
@@ -163,7 +163,7 @@ Identifying the compromised account defines the scope of unauthorized access and
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 2.png" width="800" alt="Flag 2 – Compromised User Account" />
+  <img src="assets/flag 2.png" width="800" alt="Flag 2 – Compromised User Account" />
 </p>
 
 </details>
@@ -208,7 +208,7 @@ This activity indicates deliberate network reconnaissance and suggests the attac
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 3.png" width="800" alt="Flag 3 – Network Reconnaissance" />
+  <img src="assets/flag 3.png" width="800" alt="Flag 3 – Network Reconnaissance" />
 </p>
 
 </details>
@@ -253,7 +253,7 @@ In this case, `C:\ProgramData\WindowsCache` served as the attacker’s primary s
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 4.png" width="800" alt="Flag 4 – Malware Staging Directory" />
+  <img src="assets/flag 4.png" width="800" alt="Flag 4 – Malware Staging Directory" />
 </p>
 
 </details>
@@ -297,7 +297,7 @@ In this case, the exclusions enabled the attacker to execute tools and scripts w
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 5.png" width="800" alt="Flag 5 – Defender File Extension Exclusions" />
+  <img src="assets/flag 5.png" width="800" alt="Flag 5 – Defender Extension Exclusions" />
 </p>
 
 </details>
@@ -340,7 +340,7 @@ This exclusion created a safe execution environment that enabled malware, script
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 6.png" width="800" alt="Flag 6 – Defender Path Exclusion" />
+  <img src="assets/flag 6.png" width="800" alt="Flag 6 – Defender Path Exclusion" />
 </p>
 
 </details>
@@ -385,7 +385,7 @@ This technique reduces the likelihood of alerts by avoiding the use of obvious t
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 7.png" width="800" alt="Flag 7 – Download Utility Abuse" />
+  <img src="assets/flag 7.png" width="800" alt="Flag 7 – Download Utility Abuse" />
 </p>
 
 </details>
@@ -427,7 +427,7 @@ By configuring the task to run on user logon and execute malware from a hidden d
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 8.png" width="800" alt="Flag 8 – Scheduled Task Name" />
+  <img src="assets/flag 8.png" width="800" alt="Flag 8 – Scheduled Task Name" />
 </p>
 
 </details>
@@ -472,7 +472,7 @@ This configuration ensured the malware would persist across reboots and user ses
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 9.png" width="800" alt="Flag 9 – Scheduled Task Target" />
+  <img src="assets/flag 9.png" width="800" alt="Flag 9 – Scheduled Task Target" />
 </p>
 
 </details>
@@ -515,7 +515,7 @@ Identifying the C2 server provides a critical opportunity for containment throug
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 10.png" width="800" alt="Flag 10 – Command and Control Server Address" />
+  <img src="assets/flag 10.png" width="800" alt="Flag 10 – C2 Server Address" />
 </p>
 
 </details>
@@ -558,7 +558,7 @@ Using this port allows command-and-control activity to blend in with legitimate 
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 11.png" width="800" alt="Flag 11 – C2 Communication Port" />
+  <img src="assets/flag 11.png" width="800" alt="Flag 11 – C2 Communication Port" />
 </p>
 
 </details>
@@ -603,7 +603,7 @@ This activity represents a critical escalation of attacker capability and enable
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 12.png" width="800" alt="Flag 12 – Credential Theft Tool" />
+  <img src="assets/flag 12.png" width="800" alt="Flag 12 – Credential Theft Tool" />
 </p>
 
 </details>
@@ -648,7 +648,7 @@ Its presence confirms active credential dumping and indicates the attacker succe
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 13.png" width="800" alt="Flag 13 – LSASS Memory Extraction" />
+  <img src="assets/flag 13.png" width="800" alt="Flag 13 – Memory Extraction Module" />
 </p>
 
 </details>
@@ -693,7 +693,7 @@ The presence of `export-data.zip` in the staging directory indicates deliberate 
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 14.png" width="800" alt="Flag 14 – Data Staging Archive" />
+  <img src="assets/flag 14.png" width="800" alt="Flag 14 – Data Staging Archive" />
 </p>
 
 </details>
@@ -738,7 +738,7 @@ Identifying the exfiltration channel helps define incident scope and supports co
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 15.png" width="800" alt="Flag 15 – Exfiltration Channel" />
+  <img src="assets/flag 15.png" width="800" alt="Flag 15 – Exfiltration Channel" />
 </p>
 
 </details>
@@ -782,7 +782,7 @@ The timing of this activity suggests the attacker attempted to cover their track
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 16.png" width="800" alt="Flag 16 – Log Tampering" />
+  <img src="assets/flag 16.png" width="800" alt="Flag 16 – Log Tampering" />
 </p>
 
 </details>
@@ -827,7 +827,7 @@ The presence of this account represents a lasting security impact and requires i
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 17.png" width="800" alt="Flag 17 – Persistence Account Creation" />
+  <img src="assets/flag 17.png" width="800" alt="Flag 17 – Persistence Account" />
 </p>
 
 </details>
@@ -875,7 +875,7 @@ This script represents the execution entry point for the broader intrusion.
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 18.png" width="800" alt="Flag 18 – Malicious PowerShell Script" />
+  <img src="assets/flag 18.png" width="800" alt="Flag 18 – Malicious Script Execution" />
 </p>
 
 </details>
@@ -917,7 +917,7 @@ This activity indicates the attacker was expanding access beyond the initially c
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 19.png" width="800" alt="Flag 19 – Lateral Movement Target" />
+  <img src="assets/flag 19.png" width="800" alt="Flag 19 – Lateral Movement Target" />
 </p>
 
 </details>
@@ -932,7 +932,7 @@ Identify the tool used by the attacker to perform lateral movement to a secondar
 
 ### Investigation
 Attackers often rely on built-in remote access tools to move laterally, as these utilities blend in with legitimate administrative activity.  
-Process execution related to remote desktop access is recorded in the **DeviceProcessEvents** table.
+Process execution related to remote desktop access is recorded in the DeviceProcessEvents table.
 
 The investigation focused on processes executed with command-line arguments referencing the previously identified lateral movement target.
 
@@ -959,7 +959,7 @@ This technique reduces the likelihood of detection and confirms the attacker lev
 ### Evidence
 
 <p align="left">
-  <img src="Threat Hunt – Port of Entry/assets/flag 20.png" width="800" alt="Flag 20 – Lateral Movement Tool" />
+  <img src="assets/flag 20.png" width="800" alt="Flag 20 – Lateral Movement Tool" />
 </p>
 
 </details>
