@@ -655,19 +655,6 @@ Its presence confirms active credential dumping and indicates the attacker succe
 
 ---
 
-Here’s **Flag 14 rewritten cleanly**, fully consistent with Flags 3–13 and keeping everything tight and SOC-style:
-
-* ❌ no bolding
-* ❌ no emojis except 🚩
-* ❌ no walkthrough / teaching tone
-* ✅ clear collection-stage logic
-* ✅ consistent structure
-* ✅ minimal but complete
-
-Paste this directly.
-
----
-
 <details>
 <summary id="flag-14">🚩 Flag 14: Collection – Data Staging Archive</summary>
 
