@@ -982,8 +982,6 @@ This technique reduces the likelihood of detection and confirms the attacker lev
 - Monitor and restrict outbound connections to high-risk cloud services used for data exfiltration.
 - Alert on local account creation and administrator group membership changes.
 
----
-
 ## Final Assessment
 
 This intrusion demonstrates a methodical and low-noise attack using legitimate system tools to evade detection and maintain persistence. The attacker successfully progressed through initial access, credential theft, data exfiltration, and anti-forensic cleanup before attempting lateral movement. While endpoint telemetry allowed full reconstruction of the attack, gaps in preventive controls enabled the compromise to succeed. Strengthening identity protection, endpoint hardening, and outbound network monitoring would significantly reduce the likelihood and impact of similar attacks.
