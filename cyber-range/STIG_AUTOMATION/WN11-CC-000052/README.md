@@ -1,4 +1,4 @@
-# 🛡️ Step By Step STIG Automation for STIG ID: WN11-CC-000052
+# 🗒️ Step By Step STIG Automation for STIG ID: WN11-CC-000052
 
 ## ℹ️ Overview
 
@@ -251,3 +251,4 @@ This lab demonstrates a complete STIG suggesting, validation, and automation lif
 
 
 This workflow reflects real-world compliance operations where security controls must be validated manually, automated reliably, and continuously verified through authenticated scanning.
+
