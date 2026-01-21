@@ -1,4 +1,4 @@
-# 🛡️ Step By Step STIG Automation for STIG ID: WN11-AU-000500
+# 🗒️ Step By Step STIG Automation for STIG ID: WN11-AU-000500
 
 ## ℹ️ Overview
 
