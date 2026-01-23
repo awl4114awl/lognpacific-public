@@ -6,7 +6,7 @@
   />
 </p>
 
-# 🛡️ Threat Hunt Report – Port of Entry
+# Threat Hunt Report – Port of Entry
 
 ## Executive Summary
 
