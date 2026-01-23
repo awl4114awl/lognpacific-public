@@ -1,4 +1,4 @@
-# 🗒️ Step By Step STIG Automation for STIG ID: WN11-AU-000500
+# Step By Step STIG Automation for STIG ID: WN11-AU-000500
 
 ## ℹ️ Overview
 
@@ -18,7 +18,7 @@ Through this lab, I demonstrate my ability to interpret STIG requirements, manua
 
 ---
 
-## 📓 Lab Workflow
+## Lab Workflow
 
 ### 1️⃣ Provision the Windows 11 Virtual Machine
 
