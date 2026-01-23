@@ -1,4 +1,4 @@
-# 🗒️ Step By Step STIG Automation for STIG ID: WN11-SO-000070
+# Step By Step STIG Automation for STIG ID: WN11-SO-000070
 
 ## ℹ️ Overview
 
@@ -18,7 +18,7 @@ Through this lab, I demonstrate my ability to interpret STIG requirements, manua
 
 ---
 
-## 📓 Lab Workflow
+## Lab Workflow
 
 ### 1️⃣ Provision the Windows 11 Virtual Machine
 
@@ -210,4 +210,5 @@ The scan confirmed that STIG WN11-SO-000070 was successfully applied and passed,
 This lab demonstrates a complete STIG suggesting, validation, and automation lifecycle. By manually implementing, reverting, and then automating the STIG control, I validated both my understanding of DISA STIG requirements and my ability to enforce them programmatically.
 
 This workflow reflects real-world compliance operations where security controls must be validated manually, automated reliably, and continuously verified through authenticated scanning.
+
 
