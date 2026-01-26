@@ -30,25 +30,25 @@ Azuki Import/Export experienced a targeted intrusion that resulted in the theft 
 - [MITRE ATT&CK Summary](#mitre-attck-summary)
 - [Flag Analysis](#flag-analysis)
   - [⚐ Flag 1](#flag-1)
-  - [🚩 Flag 2](#flag-2)
-  - [🚩 Flag 3](#flag-3)
-  - [🚩 Flag 4](#flag-4)
-  - [🚩 Flag 5](#flag-5)
-  - [🚩 Flag 6](#flag-6)
-  - [🚩 Flag 7](#flag-7)
-  - [🚩 Flag 8](#flag-8)
-  - [🚩 Flag 9](#flag-9)
-  - [🚩 Flag 10](#flag-10)
-  - [🚩 Flag 11](#flag-11)
-  - [🚩 Flag 12](#flag-12)
-  - [🚩 Flag 13](#flag-13)
-  - [🚩 Flag 14](#flag-14)
-  - [🚩 Flag 15](#flag-15)
-  - [🚩 Flag 16](#flag-16)
-  - [🚩 Flag 17](#flag-17)
-  - [🚩 Flag 18](#flag-18)
-  - [🚩 Flag 19](#flag-19)
-  - [🚩 Flag 20](#flag-20)
+  - [⚐ Flag 2](#flag-2)
+  - [⚐ Flag 3](#flag-3)
+  - [⚐ Flag 4](#flag-4)
+  - [⚐ Flag 5](#flag-5)
+  - [⚐ Flag 6](#flag-6)
+  - [⚐ Flag 7](#flag-7)
+  - [⚐ Flag 8](#flag-8)
+  - [⚐ Flag 9](#flag-9)
+  - [⚐ Flag 10](#flag-10)
+  - [⚐ Flag 11](#flag-11)
+  - [⚐ Flag 12](#flag-12)
+  - [⚐ Flag 13](#flag-13)
+  - [⚐ Flag 14](#flag-14)
+  - [⚐ Flag 15](#flag-15)
+  - [⚐ Flag 16](#flag-16)
+  - [⚐ Flag 17](#flag-17)
+  - [⚐ Flag 18](#flag-18)
+  - [⚐ Flag 19](#flag-19)
+  - [⚐ Flag 20](#flag-20)
 - [Detection Gaps & Recommendations](#detection-gaps--recommendations)
 - [Final Assessment](#final-assessment)
 - [Analyst Notes](#analyst-notes)
@@ -131,7 +131,7 @@ This information can be used to block malicious traffic, correlate activity acro
 ---
 
 <details>
-<summary id="flag-2">🚩 <strong>Flag 2: Initial Access – Compromised User Account</strong></summary>
+<summary id="flag-2">⚐ <strong>Flag 2: Initial Access – Compromised User Account</strong></summary>
 
 ### Objective
 Identify the user account that was compromised and used during the initial Remote Desktop access.
@@ -171,7 +171,7 @@ Identifying the compromised account defines the scope of unauthorized access and
 ---
 
 <details>
-<summary id="flag-3">🚩 Flag 3: Discovery – Network Reconnaissance</summary>
+<summary id="flag-3">⚐ Flag 3: Discovery – Network Reconnaissance</summary>
 
 ### Objective
 Identify evidence of network reconnaissance activity performed after initial access.
@@ -216,7 +216,7 @@ This activity indicates deliberate network reconnaissance and suggests the attac
 ---
 
 <details>
-<summary id="flag-4">🚩 Flag 4: Defense Evasion – Malware Staging Directory</summary>
+<summary id="flag-4">⚐ Flag 4: Defense Evasion – Malware Staging Directory</summary>
 
 ### Objective
 Identify the primary directory used by the attacker to stage malware and stolen data while evading detection.
@@ -261,7 +261,7 @@ In this case, `C:\ProgramData\WindowsCache` served as the attacker’s primary s
 ---
 
 <details>
-<summary id="flag-5">🚩 Flag 5: Defense Evasion – File Extension Exclusions</summary>
+<summary id="flag-5">⚐ Flag 5: Defense Evasion – File Extension Exclusions</summary>
 
 ### Objective
 Determine whether the attacker modified Windows Defender settings to exclude specific file extensions from scanning.
@@ -305,7 +305,7 @@ In this case, the exclusions enabled the attacker to execute tools and scripts w
 ---
 
 <details>
-<summary id="flag-6">🚩 Flag 6: Defense Evasion – Temporary Folder Exclusion</summary>
+<summary id="flag-6">⚐ Flag 6: Defense Evasion – Temporary Folder Exclusion</summary>
 
 ### Objective
 Identify whether the attacker configured Windows Defender to exclude a directory used for staging and executing malicious tools.
@@ -348,7 +348,7 @@ This exclusion created a safe execution environment that enabled malware, script
 ---
 
 <details>
-<summary id="flag-7">🚩 Flag 7: Defense Evasion – Download Utility Abuse</summary>
+<summary id="flag-7">⚐ Flag 7: Defense Evasion – Download Utility Abuse</summary>
 
 ### Objective
 Identify the Windows-native utility abused by the attacker to download malicious payloads while blending in with legitimate system activity.
@@ -393,7 +393,7 @@ This technique reduces the likelihood of alerts by avoiding the use of obvious t
 ---
 
 <details>
-<summary id="flag-8">🚩 Flag 8: Persistence – Scheduled Task Name</summary>
+<summary id="flag-8">⚐ Flag 8: Persistence – Scheduled Task Name</summary>
 
 ### Objective
 Identify the scheduled task created by the attacker to establish persistence across system logons and reboots.
@@ -435,7 +435,7 @@ By configuring the task to run on user logon and execute malware from a hidden d
 ---
 
 <details>
-<summary id="flag-9">🚩 Flag 9: Persistence – Scheduled Task Target</summary>
+<summary id="flag-9">⚐ Flag 9: Persistence – Scheduled Task Target</summary>
 
 ### Objective
 Identify the executable configured to run by the scheduled task used for persistence.
@@ -480,7 +480,7 @@ This configuration ensured the malware would persist across reboots and user ses
 ---
 
 <details>
-<summary id="flag-10">🚩 Flag 10: Command and Control – C2 Server Address</summary>
+<summary id="flag-10">⚐ Flag 10: Command and Control – C2 Server Address</summary>
 
 ### Objective
 Identify the external command-and-control server used by the attacker to communicate with the compromised system.
@@ -523,7 +523,7 @@ Identifying the C2 server provides a critical opportunity for containment throug
 ---
 
 <details>
-<summary id="flag-11">🚩 Flag 11: Command and Control – C2 Communication Port</summary>
+<summary id="flag-11">⚐ Flag 11: Command and Control – C2 Communication Port</summary>
 
 ### Objective
 Identify the network port used by the malware for command-and-control communication.
@@ -566,7 +566,7 @@ Using this port allows command-and-control activity to blend in with legitimate 
 ---
 
 <details>
-<summary id="flag-12">🚩 Flag 12: Credential Access – Credential Theft Tool</summary>
+<summary id="flag-12">⚐ Flag 12: Credential Access – Credential Theft Tool</summary>
 
 ### Objective
 Identify the tool used by the attacker to perform credential dumping on the compromised system.
@@ -611,7 +611,7 @@ This activity represents a critical escalation of attacker capability and enable
 ---
 
 <details>
-<summary id="flag-13">🚩 Flag 13: Credential Access – Memory Extraction Module</summary>
+<summary id="flag-13">⚐ Flag 13: Credential Access – Memory Extraction Module</summary>
 
 ### Objective
 Identify the credential dumping technique used by the attacker to extract authentication data from system memory.
@@ -656,7 +656,7 @@ Its presence confirms active credential dumping and indicates the attacker succe
 ---
 
 <details>
-<summary id="flag-14">🚩 Flag 14: Collection – Data Staging Archive</summary>
+<summary id="flag-14">⚐ Flag 14: Collection – Data Staging Archive</summary>
 
 ### Objective
 Identify the archive used by the attacker to stage stolen data prior to exfiltration.
@@ -701,7 +701,7 @@ The presence of `export-data.zip` in the staging directory indicates deliberate 
 ---
 
 <details>
-<summary id="flag-15">🚩 Flag 15: Exfiltration – Exfiltration Channel</summary>
+<summary id="flag-15">⚐ Flag 15: Exfiltration – Exfiltration Channel</summary>
 
 ### Objective
 Identify the external service used by the attacker to exfiltrate stolen data.
@@ -746,7 +746,7 @@ Identifying the exfiltration channel helps define incident scope and supports co
 ---
 
 <details>
-<summary id="flag-16">🚩 Flag 16: Anti-Forensics – Log Tampering</summary>
+<summary id="flag-16">⚐ Flag 16: Anti-Forensics – Log Tampering</summary>
 
 ### Objective
 Identify evidence of event log tampering performed to conceal attacker activity.
@@ -790,7 +790,7 @@ The timing of this activity suggests the attacker attempted to cover their track
 ---
 
 <details>
-<summary id="flag-17">🚩 Flag 17: Impact – Persistence Account</summary>
+<summary id="flag-17">⚐ Flag 17: Impact – Persistence Account</summary>
 
 ### Objective
 Identify evidence of a backdoor account created to maintain long-term access to the compromised system.
@@ -835,7 +835,7 @@ The presence of this account represents a lasting security impact and requires i
 ---
 
 <details>
-<summary id="flag-18">🚩 Flag 18: Execution – Malicious Script</summary>
+<summary id="flag-18">⚐ Flag 18: Execution – Malicious Script</summary>
 
 ### Objective
 Identify the script used by the attacker to automate execution of the attack chain.
@@ -883,7 +883,7 @@ This script represents the execution entry point for the broader intrusion.
 ---
 
 <details>
-<summary id="flag-19">🚩 Flag 19: Lateral Movement – Secondary Target</summary>
+<summary id="flag-19">⚐ Flag 19: Lateral Movement – Secondary Target</summary>
 
 ### Objective
 Identify the secondary system targeted by the attacker for lateral movement.
@@ -925,7 +925,7 @@ This activity indicates the attacker was expanding access beyond the initially c
 ---
 
 <details>
-<summary id="flag-20">🚩 Flag 20: Lateral Movement – Remote Access Tool</summary>
+<summary id="flag-20">⚐ Flag 20: Lateral Movement – Remote Access Tool</summary>
 
 ### Objective
 Identify the tool used by the attacker to perform lateral movement to a secondary system.
