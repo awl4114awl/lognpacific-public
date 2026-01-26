@@ -29,7 +29,7 @@ Azuki Import/Export experienced a targeted intrusion that resulted in the theft 
 - [Hunt Overview](#hunt-overview)
 - [MITRE ATT&CK Summary](#mitre-attck-summary)
 - [Flag Analysis](#flag-analysis)
-  - [🚩 Flag 1](#flag-1)
+  - [⚐ Flag 1](#flag-1)
   - [🚩 Flag 2](#flag-2)
   - [🚩 Flag 3](#flag-3)
   - [🚩 Flag 4](#flag-4)
@@ -89,7 +89,7 @@ _All flags below are collapsible for readability._
 ---
 
 <details>
-<summary id="flag-1">🚩 <strong>Flag 1: Initial Access – Remote Access Source</strong></summary>
+<summary id="flag-1">⚐ <strong>Flag 1: Initial Access – Remote Access Source</strong></summary>
 
 ### Objective
 Identify the external source used to gain initial access via Remote Desktop Protocol (RDP).
