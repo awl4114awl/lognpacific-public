@@ -2,7 +2,7 @@
 
 ## ⓘ Overview
 
-This lab was carried out in The Cyber Range, an Azure-hosted enterprise environment where I replicate real-world detection, investigation, and remediation workflows. In this scenario, I focused on STIG automation using PowerShell combined with Tenable authenticated scanning.
+This lab was carried out in [The Cyber Range](http://joshmadakor.tech/cyber-range), an Azure-hosted enterprise environment where I replicate real-world detection, investigation, and remediation workflows. In this scenario, I focused on STIG automation using PowerShell combined with Tenable authenticated scanning.
 
 To create a realistic compliance and remediation exercise, I deliberately disabled the Windows Firewall on a Windows 11 Pro virtual machine. I then worked through a structured STIG implementation lifecycle that mirrors how compliance controls are identified, validated, and enforced in an enterprise environment.
 
@@ -17,8 +17,6 @@ The workflow included:
 Through this lab, I demonstrate my ability to interpret STIG requirements, manually validate security controls, translate policy guidance into registry-level configuration changes, and automate compliance enforcement using PowerShell.
 
 ---
-
-## Lab Workflow
 
 ### 1. Provision the Windows 11 Virtual Machine
 
