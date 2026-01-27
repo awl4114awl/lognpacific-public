@@ -1,8 +1,8 @@
 # Step By Step STIG Automation for STIG ID: WN11-CC-000327
 
-## ℹ️ Overview
+## ⓘ Overview
 
-This lab was carried out in The Cyber Range, an Azure-hosted enterprise environment where I replicate real-world detection, investigation, and remediation workflows. In this scenario, I focused on STIG automation using PowerShell combined with Tenable authenticated scanning.
+This lab was carried out in [The Cyber Range](http://joshmadakor.tech/cyber-range), an Azure-hosted enterprise environment where I replicate real-world detection, investigation, and remediation workflows. In this scenario, I focused on STIG automation using PowerShell combined with Tenable authenticated scanning.
 
 To create a realistic compliance and remediation exercise, I deliberately disabled the Windows Firewall on a Windows 11 Pro virtual machine. I then worked through a structured STIG implementation lifecycle that mirrors how compliance controls are identified, validated, and enforced in an enterprise environment.
 
@@ -18,9 +18,7 @@ Through this lab, I demonstrate my ability to interpret STIG requirements, manua
 
 ---
 
-## Lab Workflow
-
-### 1️⃣ Provision the Windows 11 Virtual Machine
+### 1. Provision the Windows 11 Virtual Machine
 
 I provisioned a Windows 11 Pro virtual machine in Microsoft Azure using the Cyber Range infrastructure.
 
@@ -40,7 +38,7 @@ I provisioned a Windows 11 Pro virtual machine in Microsoft Azure using the Cybe
 
 ---
 
-### 2️⃣ Disable the Windows Firewall
+### 2. Disable the Windows Firewall
 
 To simulate a misconfigured system commonly encountered in real environments, I disabled the Windows Firewall on the virtual machine.
 
@@ -50,7 +48,7 @@ To simulate a misconfigured system commonly encountered in real environments, I 
 
 ---
 
-### 3️⃣ Create an Advanced Network Scan and Run a Baseline Scan
+### 3. Create an Advanced Network Scan and Run a Baseline Scan
 
 I logged into Tenable Vulnerability Management and created a new scan using a User Defined template scan.
 
@@ -81,7 +79,7 @@ I then ran the initial baseline scan.
 
 ---
 
-### 4️⃣ Investigate Scan Results and Identify the STIG
+### 4. Investigate Scan Results and Identify the STIG
 
 After reviewing the scan results, I identified a failed STIG: WN11-CC-000327.
 
@@ -99,7 +97,7 @@ Enabling PowerShell Transcription will record detailed information from the proc
 
 ---
 
-### 5️⃣ Manually Apply the STIG and Verify the Fix
+### 5. Manually Apply the STIG and Verify the Fix
 
 To manually apply STIG WN11-CC-000327, Configure the policy value for Computer Configuration >> Administrative Templates >> Windows Components >> Windows PowerShell >> "Turn on PowerShell Transcription" to "Enabled".
 
@@ -125,7 +123,7 @@ After applying the change, I restarted the VM and ran the scan again to validate
 
 ---
 
-### 6️⃣ Revert the Fix and Confirm Failure
+### 6. Revert the Fix and Confirm Failure
 
 Once the STIG passed successfully, I reverted the configuration to confirm the control would fail again. To validate that the compliance finding was directly tied to the registry-based policy values, I reverted the configuration by disabling PowerShell transcription at the registry level.
 
@@ -137,12 +135,12 @@ To disable transcription, the EnableTranscripting value must be set to 0. Any co
 Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\Transcription"
 ````
 
-**What this does:**
+What this does:
 Checks whether the registry location used by Group Policy to control PowerShell Transcription exists.
 
-**Result:** `True`
+Result: `True`
 
-**Meaning:**
+Meaning:
 
 * The system has a policy-backed configuration location for PowerShell Transcription
 * The setting can be enforced via registry changes rather than the Local Group Policy Editor
@@ -156,15 +154,15 @@ Checks whether the registry location used by Group Policy to control PowerShell 
 Get-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\Transcription"
 ```
 
-**What this does:**
+What this does:
 Displays the current policy values controlling PowerShell Transcription.
 
-**Observed state:**
+Observed state:
 
 * `EnableTranscripting : 1`
 * `OutputDirectory : <configured>`
 
-**Meaning:**
+Meaning:
 
 * PowerShell Transcription was enabled
 * Transcripts were being written to a defined directory
@@ -182,13 +180,13 @@ Set-ItemProperty `
   -Value 0
 ```
 
-**What this does:**
+What this does:
 
 * Disables PowerShell Transcription by setting the policy value to `0`
 * Functionally equivalent to setting
   *Turn on PowerShell Transcription → Disabled* in Group Policy
 
-**Why this matters:**
+Why this matters:
 
 * This change directly impacts what compliance scanners evaluate
 * No GUI interaction is required
@@ -204,12 +202,12 @@ Remove-ItemProperty `
   -ErrorAction SilentlyContinue
 ```
 
-**What this does:**
+What this does:
 
 * Removes the configured transcript storage location
 * Ensures no residual transcription configuration remains
 
-**Why this is done:**
+Why this is done:
 
 * Prevents partial or ambiguous policy states
 * Makes the STIG failure condition explicit
@@ -222,12 +220,12 @@ Remove-ItemProperty `
 Get-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\Transcription"
 ```
 
-**What this confirms:**
+What this confirms:
 
 * `EnableTranscripting : 0`
 * `OutputDirectory` is no longer present
 
-**Meaning:**
+Meaning:
 
 * PowerShell Transcription is disabled
 * The system should now fail STIG WN11-CC-000327
@@ -257,7 +255,7 @@ As expected, STIG WN11-CC-000327 returned to a failed state, confirming that the
 
 ---
 
-### 7️⃣ Generate and Apply the PowerShell Remediation
+### 7. Generate and Apply the PowerShell Remediation
 
 After validating the manual fix, I translated the STIG requirements into an automated PowerShell remediation script.
 
@@ -287,7 +285,7 @@ After remediation:
 
 ---
 
-### 8️⃣ Confirm STIG Compliance via Re-Scan
+### 8. Confirm STIG Compliance via Re-Scan
 
 After applying the PowerShell script, I ran another authenticated compliance scan in Tenable.
 
@@ -307,11 +305,12 @@ The scan confirmed that STIG WN11-AC-000010 was successfully applied and passed,
 
 ---
 
-### 9️⃣ Conclusion
+### 9. Conclusion
 
 This lab demonstrates a complete STIG suggesting, validation, and automation lifecycle. By manually implementing, reverting, and then automating the STIG control, I validated both my understanding of DISA STIG requirements and my ability to enforce them programmatically.
 
 This workflow reflects real-world compliance operations where security controls must be validated manually, automated reliably, and continuously verified through authenticated scanning.
+
 
 
 
