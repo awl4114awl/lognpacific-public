@@ -18,8 +18,6 @@ Through this lab, I demonstrate my ability to interpret STIG requirements, manua
 
 ---
 
-## Lab Workflow
-
 ### 1. Provision the Windows 11 Virtual Machine
 
 I provisioned a Windows 11 Pro virtual machine in Microsoft Azure using the Cyber Range infrastructure.
@@ -255,3 +253,4 @@ The scan confirmed that STIG WN11-AC-000052 was successfully applied and passed,
 This lab demonstrates a complete STIG suggesting, validation, and automation lifecycle. By manually implementing, reverting, and then automating the STIG control, I validated both my understanding of DISA STIG requirements and my ability to enforce them programmatically.
 
 This workflow reflects real-world compliance operations where security controls must be validated manually, automated reliably, and continuously verified through authenticated scanning.
+
