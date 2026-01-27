@@ -1,8 +1,8 @@
 # Step By Step STIG Automation for STIG ID: WN11-SO-000070
 
-## ℹ️ Overview
+## ⓘ Overview
 
-This lab was carried out in The Cyber Range, an Azure-hosted enterprise environment where I replicate real-world detection, investigation, and remediation workflows. In this scenario, I focused on STIG automation using PowerShell combined with Tenable authenticated scanning.
+This lab was carried out in [The Cyber Range](http://joshmadakor.tech/cyber-range), an Azure-hosted enterprise environment where I replicate real-world detection, investigation, and remediation workflows. In this scenario, I focused on STIG automation using PowerShell combined with Tenable authenticated scanning.
 
 To create a realistic compliance and remediation exercise, I deliberately disabled the Windows Firewall on a Windows 11 Pro virtual machine. I then worked through a structured STIG implementation lifecycle that mirrors how compliance controls are identified, validated, and enforced in an enterprise environment.
 
@@ -18,9 +18,7 @@ Through this lab, I demonstrate my ability to interpret STIG requirements, manua
 
 ---
 
-## Lab Workflow
-
-### 1️⃣ Provision the Windows 11 Virtual Machine
+### 1. Provision the Windows 11 Virtual Machine
 
 I provisioned a Windows 11 Pro virtual machine in Microsoft Azure using the Cyber Range infrastructure.
 
@@ -40,7 +38,7 @@ I provisioned a Windows 11 Pro virtual machine in Microsoft Azure using the Cybe
 
 ---
 
-### 2️⃣ Disable the Windows Firewall
+### 2. Disable the Windows Firewall
 
 To simulate a misconfigured system commonly encountered in real environments, I disabled the Windows Firewall on the virtual machine.
 
@@ -50,7 +48,7 @@ To simulate a misconfigured system commonly encountered in real environments, I 
 
 ---
 
-### 3️⃣ Create an Advanced Network Scan and Run a Baseline Scan
+### 3. Create an Advanced Network Scan and Run a Baseline Scan
 
 I logged into Tenable Vulnerability Management and created a new scan using a User Defined template scan.
 
@@ -80,7 +78,7 @@ I then ran the initial baseline scan.
 
 ---
 
-### 4️⃣ Investigate Scan Results and Identify the STIG
+### 4. Investigate Scan Results and Identify the STIG
 
 After reviewing the scan results, I identified a failed STIG: WN11-SO-000070.
 
@@ -96,7 +94,7 @@ According to stigaview.com, Unattended systems are susceptible to unauthorized u
 
 ---
 
-### 5️⃣ Manually Apply the STIG and Verify the Fix
+### 5. Manually Apply the STIG and Verify the Fix
 
 To manually apply STIG WN11-SO-000070, Configure the policy value for Computer Configuration >> Windows Settings >> Security Settings >> Local Policies >> Security Options >> "Interactive logon: Machine inactivity limit" to "900" seconds" or less, excluding "0" which is effectively disabled.
 
@@ -118,7 +116,7 @@ After applying the change, I restarted the VM and ran the scan again to validate
 
 ---
 
-### 6️⃣ Revert the Fix and Confirm Failure
+### 6. Revert the Fix and Confirm Failure
 
 Once the STIG passed successfully, I reverted the configuration to confirm the control would fail again, except this time I did it via regedit.
 
@@ -129,10 +127,10 @@ Once the STIG passed successfully, I reverted the configuration to confirm the c
    `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\`
 4. In the right-hand pane, look for a value named `InactivityTimeoutSecs`.
    - If it exists, double-click it.
-   - If it does not exist, right-click on the right-hand pane, select **New > DWORD (32-bit) Value**, and name it `InactivityTimeoutSecs`.
-5. In the Edit DWORD (32-bit) Value window, ensure **Decimal** is selected under Base.
-6. Enter a value of **900 or less** in the Value data field.
-7. Click **OK** to save the changes.
+   - If it does not exist, right-click on the right-hand pane, select New > DWORD (32-bit) Value, and name it `InactivityTimeoutSecs`.
+5. In the Edit DWORD (32-bit) Value window, ensure Decimal is selected under Base.
+6. Enter a value of 900 or less in the Value data field.
+7. Click OK to save the changes.
 8. Close the Registry Editor and reboot the system for the change to take full effect.
 
 <p align="left">
@@ -155,16 +153,16 @@ This confirmed that the STIG failed once more, validating both detection accurac
 
 ---
 
-### 7️⃣ Generate and Apply the PowerShell Remediation
+### 7. Generate and Apply the PowerShell Remediation
 
 After validating the manual fix, I translated the STIG requirements into an automated PowerShell remediation script.
 
 The script was designed to:
 - Verify the required registry path exists (`HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System`) and create it if needed
 - Create or update the `InactivityTimeoutSecs` DWORD value
-- Enforce a STIG-compliant timeout of **900 seconds (15 minutes)** or less, explicitly avoiding `0` (disabled)
+- Enforce a STIG-compliant timeout of 900 seconds (15 minutes) or less, explicitly avoiding `0` (disabled)
 - Refresh policy (`gpupdate`) and recommend a reboot so the setting is consistently applied
-- Align directly with STIG ID **WN11-SO-000070** (“Interactive logon: Machine inactivity limit”)
+- Align directly with STIG ID WN11-SO-000070 (“Interactive logon: Machine inactivity limit”)
 
 I reviewed the script to ensure it matched the manual configuration steps and prepared it for testing.
 
@@ -185,7 +183,7 @@ After remediation:
 
 ---
 
-### 8️⃣ Confirm STIG Compliance via Re-Scan
+### 8. Confirm STIG Compliance via Re-Scan
 
 After applying the PowerShell script, I ran another authenticated compliance scan in Tenable.
 
@@ -205,10 +203,6 @@ The scan confirmed that STIG WN11-SO-000070 was successfully applied and passed,
 
 ---
 
-### 9️⃣ Conclusion
+### 9. Conclusion
 
 This lab demonstrates a complete STIG suggesting, validation, and automation lifecycle. By manually implementing, reverting, and then automating the STIG control, I validated both my understanding of DISA STIG requirements and my ability to enforce them programmatically.
-
-This workflow reflects real-world compliance operations where security controls must be validated manually, automated reliably, and continuously verified through authenticated scanning.
-
-
