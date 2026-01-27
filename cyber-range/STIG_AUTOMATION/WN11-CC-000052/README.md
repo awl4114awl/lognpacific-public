@@ -1,8 +1,8 @@
 # Step By Step STIG Automation for STIG ID: WN11-CC-000052
 
-## ℹ️ Overview
+## ⓘ Overview
 
-This lab was carried out in The Cyber Range, an Azure-hosted enterprise environment where I replicate real-world detection, investigation, and remediation workflows. In this scenario, I focused on STIG automation using PowerShell combined with Tenable authenticated scanning.
+This lab was carried out in [The Cyber Range](http://joshmadakor.tech/cyber-range), an Azure-hosted enterprise environment where I replicate real-world detection, investigation, and remediation workflows. In this scenario, I focused on STIG automation using PowerShell combined with Tenable authenticated scanning.
 
 To create a realistic compliance and remediation exercise, I deliberately disabled the Windows Firewall on a Windows 11 Pro virtual machine. I then worked through a structured STIG implementation lifecycle that mirrors how compliance controls are identified, validated, and enforced in an enterprise environment.
 
@@ -18,9 +18,7 @@ Through this lab, I demonstrate my ability to interpret STIG requirements, manua
 
 ---
 
-## Lab Workflow
-
-### 1️⃣ Provision the Windows 11 Virtual Machine
+### 1. Provision the Windows 11 Virtual Machine
 
 I provisioned a Windows 11 Pro virtual machine in Microsoft Azure using the Cyber Range infrastructure.
 
@@ -40,7 +38,7 @@ I provisioned a Windows 11 Pro virtual machine in Microsoft Azure using the Cybe
 
 ---
 
-### 2️⃣ Disable the Windows Firewall
+### 2. Disable the Windows Firewall
 
 To simulate a misconfigured system commonly encountered in real environments, I disabled the Windows Firewall on the virtual machine.
 
@@ -50,7 +48,7 @@ To simulate a misconfigured system commonly encountered in real environments, I 
 
 ---
 
-### 3️⃣ Create an Advanced Network Scan and Run a Baseline Scan
+### 3. Create an Advanced Network Scan and Run a Baseline Scan
 
 I logged into Tenable Vulnerability Management and created a new scan using a User Defined template scan.
 
@@ -81,7 +79,7 @@ I then ran the initial baseline scan.
 
 ---
 
-### 4️⃣ Investigate Scan Results and Identify the STIG
+### 4. Investigate Scan Results and Identify the STIG
 
 After reviewing the scan results, I identified a failed STIG: WN11-CC-000052.
 
@@ -97,7 +95,7 @@ According to stigaview.com, Use of weak or untested encryption algorithms underm
 
 ---
 
-### 5️⃣ Manually Apply the STIG and Verify the Fix
+### 5. Manually Apply the STIG and Verify the Fix
 
 To manually apply STIG WN11-CC-000052, Configure the policy value for Computer Configuration >> Administrative Templates >> Network >> SSL Configuration Settings >> "ECC Curve Order" to "Enabled" with "ECC Curve Order:" including the following in the order listed:
 
@@ -124,7 +122,7 @@ After applying the change, I restarted the VM and ran the scan again to validate
 
 ---
 
-### 6️⃣ Revert the Fix and Confirm Failure
+### 6. Revert the Fix and Confirm Failure
 
 To confirm that the STIG compliance result was directly tied to the ECC Curve Order configuration, I manually reverted the setting using the Windows Registry Editor.
 
@@ -188,7 +186,7 @@ As expected, STIG WN11-CC-000052 returned to a failed state, confirming that the
 
 ---
 
-### 7️⃣ Generate and Apply the PowerShell Remediation
+### 7. Generate and Apply the PowerShell Remediation
 
 After validating the manual fix, I translated the STIG requirements into an automated PowerShell remediation script.
 
@@ -225,7 +223,7 @@ After remediation:
 
 ---
 
-### 8️⃣ Confirm STIG Compliance via Re-Scan
+### 8. Confirm STIG Compliance via Re-Scan
 
 After applying the PowerShell script, I ran another authenticated compliance scan in Tenable.
 
@@ -245,11 +243,6 @@ The scan confirmed that STIG WN11-AC-000052 was successfully applied and passed,
 
 ---
 
-### 9️⃣ Conclusion
+### 9. Conclusion
 
 This lab demonstrates a complete STIG suggesting, validation, and automation lifecycle. By manually implementing, reverting, and then automating the STIG control, I validated both my understanding of DISA STIG requirements and my ability to enforce them programmatically.
-
-
-This workflow reflects real-world compliance operations where security controls must be validated manually, automated reliably, and continuously verified through authenticated scanning.
-
-
